@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: threeboys-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: threeboys
+      MYSQL_USER: threeboys
+      MYSQL_PASSWORD: threeboys
+    ports:
+      - "3306:3306"
+    volumes:
+      - threeboys_mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  threeboys_mysql_data:
