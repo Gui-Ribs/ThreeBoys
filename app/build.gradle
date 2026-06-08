@@ -16,13 +16,34 @@ javafx {
     modules = ['javafx.controls']
 }
 
-dependencies {
-    implementation 'com.mysql:mysql-connector-j:9.2.0'
-}
-
 application {
     mainClass = 'com.threeboys.MainApp'
     applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics']
+}
+
+dependencies {
+    implementation 'com.mysql:mysql-connector-j:9.2.0'
+    testImplementation platform('org.junit:junit-bom:6.1.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags "integration"
+    }
+}
+
+tasks.register("integrationTest", Test) {
+    description = "Roda testes de integração"
+    group = "verification"
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags "integration"
+    }
 }
 
 spotless {
