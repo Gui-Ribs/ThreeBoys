@@ -16,7 +16,7 @@ public class LoginBoundary {
 	private final VBox root;
 
 	public LoginBoundary() {
-		
+
 		Label titulo = new Label("3Boys!");
 
 		TextField usuario = new TextField();
