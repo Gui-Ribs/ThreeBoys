@@ -18,16 +18,19 @@ db-exec: ## Executa o shell do MySQL no container
 	$(COMPOSE) exec mysql sh -lc 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
 
 run: ## Roda a aplicação com variáveis de ambiente
-	set -a; . ./.env; set +a; $(GRADLE) :app:run
+	set -a; . ./.env; set +a; $(GRADLE) :app:run --no-daemon
 
 run-windows: ## Roda a aplicação no Windows
-	set -a; . ./.env; set +a; $(GRADLE-WINDOWS) :app:run
+	set -a; . ./.env; set +a; $(GRADLE-WINDOWS) :app:run --no-daemon
 
 build: ## Compila o projeto
 	$(GRADLE) build
 
-test: ## Roda os testes
-	$(GRADLE) test
+test: ## Roda os testes unitários
+	set -a; . ./.env; set +a; $(GRADLE) :app:test --no-daemon
+
+test-integration: ## Roda testes de integração
+	set -a; . ./.env; set +a; $(GRADLE) :app:integrationTest --no-daemon --rerun-tasks
 
 fmt: ## Formata o código
 	$(GRADLE) :app:fmt
