@@ -30,7 +30,7 @@ test: ## Roda os testes unitários
 	set -a; . ./.env; set +a; $(GRADLE) :app:test --no-daemon
 
 test-integration: ## Roda testes de integração
-	set -a; . ./.env; set +a; $(GRADLE) :app:integrationTest --no-daemon --rerun-tasks
+	set -a; . ./.env; set +a; $(GRADLE) :app:integrationTest --no-daemon
 
 fmt: ## Formata o código
 	$(GRADLE) :app:fmt
