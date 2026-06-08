@@ -10,14 +10,21 @@ db-up: ## Sobe o container MySQL
 db-down: ## Para o container MySQL
 	$(COMPOSE) down
 
-db-reset: ## Remove containers e volumes
+db-reset: ## Remove containers e volumes e sobe novamente o MySQL
 	$(COMPOSE) down -v
+	$(COMPOSE) up -d mysql
 
-run: ## Roda a aplicação JavaFX
+db-shell: ## Executa o shell do MySQL no container
+	$(COMPOSE) exec mysql sh -lc 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
+
+run: ## Roda a aplicação
 	$(GRADLE) :app:run
 
-run-windows: ## Roda a aplicação JavaFX no Windows
-	$(GRADLE-WINDOWS) :app:run
+run-env: ## Roda a aplicação com variáveis de ambiente
+	set -a; . ./.env; set +a; $(GRADLE) :app:run
+
+run-windows: ## Roda a aplicação no Windows
+	set -a; . ./.env; set +a; $(GRADLE-WINDOWS) :app:run
 
 build: ## Compila o projeto
 	$(GRADLE) build

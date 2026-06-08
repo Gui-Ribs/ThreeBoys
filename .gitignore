@@ -35,4 +35,6 @@ Thumbs.db
 *.swp
 *~
 
+log.txt
+
 .env
