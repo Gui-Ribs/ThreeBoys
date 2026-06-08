@@ -1,5 +1,7 @@
 package com.threeboys.presentation.boundary;
 
+import com.threeboys.config.AppFactory;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ public class LoginBoundary {
 	private final VBox root;
 
 	public LoginBoundary() {
+		
 		Label titulo = new Label("3Boys!");
 
 		TextField usuario = new TextField();
