@@ -4,7 +4,7 @@ public class Material {
 
 	private Long id;
 	private String nome;
-	private int qtde;
+	private Integer qtde;
 	private String unidadeMedida;
 	private String marca;
 	private double preco;
