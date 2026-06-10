@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS produto (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
+    tamanho VARCHAR(100) NOT NULL,
     chocolate VARCHAR(100) NOT NULL,
     tipo VARCHAR(100) NOT NULL,
     preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0),
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS material (
     nome VARCHAR(100) NOT NULL,
     qtde INT NOT NULL CHECK (qtde >= 0),
     unidadeMedida VARCHAR(50) NOT NULL,
-    marca VARCHAR(100) NOT NULL,
+    marca VARCHAR(100),
     preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0),
     estoque INT NOT NULL CHECK (estoque >= 0),
     descricao TEXT,
