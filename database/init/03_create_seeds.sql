@@ -61,4 +61,26 @@ INSERT INTO item_pedido (
 (@pedido_ana, @produto_ovo, 1, 45.00),
 (@pedido_ana, @produto_brownie, 2, 8.50);
 
+INSERT INTO material (
+    nome,
+    qtde,
+    unidade_medida,
+    marca,
+    preco,
+    estoque,
+    descricao
+) VALUES
+('Chocolate ao Leite', 1, 'kg', 'Harald', 32.90, 15, 'Chocolate para produção de brigadeiros, trufas e ovos de colher'),
+('Chocolate Meio Amargo', 1, 'kg', 'Sicao', 36.50, 10, 'Chocolate usado em receitas com sabor mais intenso'),
+('Chocolate Branco', 1, 'kg', 'Harald', 34.90, 12, 'Chocolate branco para trufas, recheios e decoração'),
+('Leite Condensado', 395, 'g', 'Moça', 7.99, 40, 'Ingrediente base para brigadeiros e recheios'),
+('Creme de Leite', 200, 'g', 'Nestlé', 4.50, 35, 'Usado para ganaches, recheios e coberturas'),
+('Granulado de Chocolate', 500, 'g', 'Dori', 12.90, 20, 'Granulado para acabamento de brigadeiros'),
+('Manteiga Sem Sal', 200, 'g', 'Aviação', 11.50, 8, 'Usada no preparo de brigadeiros e massas'),
+('Morango', 1, 'kg', NULL, 18.00, 6, 'Fruta usada em trufas, recheios e sobremesas'),
+('Embalagem para Trufa', 100, 'unidade', 'Cromus', 14.90, 25, 'Embalagens individuais para trufas'),
+('Forma para Ovo de Páscoa', 1, 'unidade', 'BWB', 9.90, 10, 'Forma plástica para produção de ovos de chocolate'),
+('Colher Descartável', 50, 'unidade', 'PraFesta', 6.90, 18, 'Colheres usadas em ovos de colher e sobremesas'),
+('Caixa para Doces', 10, 'unidade', 'Cromus', 22.00, 14, 'Caixas para montagem e entrega de pedidos');
+
 COMMIT;

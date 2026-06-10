@@ -9,4 +9,5 @@ public interface PedidoRepository {
 	Optional<Pedido> findById(long id);
 	Pedido save(Pedido pedido);
 	void delete(long id);
+	boolean existsByClienteId(long id);
 }

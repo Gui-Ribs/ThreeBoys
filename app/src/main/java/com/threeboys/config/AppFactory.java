@@ -1,11 +1,17 @@
 package com.threeboys.config;
 
 import com.threeboys.application.control.ClienteControl;
+import com.threeboys.application.control.MaterialControl;
 import com.threeboys.application.control.PedidoControl;
+import com.threeboys.application.control.ProdutoControl;
 import com.threeboys.application.repository.ClienteRepository;
+import com.threeboys.application.repository.MaterialRepository;
 import com.threeboys.application.repository.PedidoRepository;
+import com.threeboys.application.repository.ProdutoRepository;
 import com.threeboys.infrastructure.database.ClienteDAO;
+import com.threeboys.infrastructure.database.MaterialDAO;
 import com.threeboys.infrastructure.database.PedidoDAO;
+import com.threeboys.infrastructure.database.ProdutoDAO;
 import com.threeboys.infrastructure.database.jdbc.JdbcExecutor;
 
 public final class AppFactory {
@@ -19,11 +25,15 @@ public final class AppFactory {
 
 	private final PedidoRepository pedidoRepository;
 	private final ClienteRepository clienteRepository;
+	private final ProdutoRepository produtoRepository;
+	private final MaterialRepository materialRepository;
 
 	// Control
 
 	private final PedidoControl pedidoControl;
 	private final ClienteControl clienteControl;
+	private final ProdutoControl produtoControl;
+	private final MaterialControl materialControl;
 
 	private AppFactory() {
 		this.connectionFactory = ConnectionFactory.getInstance();
@@ -31,9 +41,13 @@ public final class AppFactory {
 
 		this.pedidoRepository = new PedidoDAO(jdbcExecutor);
 		this.clienteRepository = new ClienteDAO(jdbcExecutor);
+		this.produtoRepository = new ProdutoDAO(jdbcExecutor);
+		this.materialRepository = new MaterialDAO(jdbcExecutor);
 
 		this.pedidoControl = new PedidoControl(pedidoRepository, clienteRepository);
-		this.clienteControl = new ClienteControl(clienteRepository);
+		this.clienteControl = new ClienteControl(clienteRepository, pedidoRepository);
+		this.produtoControl = new ProdutoControl(produtoRepository);
+		this.materialControl = new MaterialControl(materialRepository);
 	}
 
 	public static AppFactory getInstance() {
@@ -56,6 +70,14 @@ public final class AppFactory {
 
 	public PedidoControl getPedidoControl() {
 		return pedidoControl;
+	}
+
+	public ProdutoControl getProdutoControl() {
+		return produtoControl;
+	}
+
+	public MaterialControl getMaterialControl()  {
+		return materialControl;
 	}
 
 	private static class Holder {

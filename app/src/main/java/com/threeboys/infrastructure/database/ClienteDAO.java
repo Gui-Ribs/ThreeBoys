@@ -2,12 +2,15 @@ package com.threeboys.infrastructure.database;
 
 import com.threeboys.application.repository.ClienteRepository;
 import com.threeboys.domain.model.Cliente;
+import com.threeboys.domain.model.Contato;
+import com.threeboys.domain.model.Pagamento;
 import com.threeboys.infrastructure.database.jdbc.JdbcExecutor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ClienteDAO implements ClienteRepository {
@@ -20,7 +23,7 @@ public class ClienteDAO implements ClienteRepository {
 
 	@Override
 	public List<Cliente> findAll() {
-		return execute.query("SELECT id, nome, telefone, endereco , observacao FROM cliente ORDER BY nome", 
+		return execute.query("SELECT id, nome, telefone, endereco, preferencia_contato, preferencia_pagamento, observacao FROM cliente ORDER BY nome", 
 		ps -> { }, // Sem parâmetros ou seja "?" em um WHERE
 		ClienteDAO::mapCliente);
 	}
@@ -28,7 +31,7 @@ public class ClienteDAO implements ClienteRepository {
 	@Override
 	public Optional<Cliente> findById(long id) {
 		return execute.queryObject(
-			"SELECT id, nome, telefone, endereco, observacao FROM cliente WHERE id = ?",
+			"SELECT id, nome, telefone, endereco, preferencia_contato, preferencia_pagamento, observacao FROM cliente WHERE id = ?",
 			ps -> ps.setLong(1, id), 
 			ClienteDAO::mapCliente);
 	}
@@ -36,7 +39,7 @@ public class ClienteDAO implements ClienteRepository {
 	@Override
 	public Cliente save(Cliente cliente) {
 		long id = execute.insertById(
-			"INSERT INTO cliente (nome, telefone, endereco, observacao) VALUES (?,?,?,?)", 
+			"INSERT INTO cliente (nome, telefone, endereco, preferencia_contato, preferencia_pagamento, observacao) VALUES (?,?,?,?,?,?)", 
 			ps -> insert(ps, cliente)
 		);
 		cliente.setId(id);
@@ -46,10 +49,10 @@ public class ClienteDAO implements ClienteRepository {
 	@Override
 	public Cliente update(Cliente cliente) {
 		execute.update(
-			"UPDATE cliente SET nome = ?, telefone = ?, endereco = ?, observacao = ? WHERE id = ?",
+			"UPDATE cliente SET nome = ?, telefone = ?, endereco = ?, preferencia_contato = ?, preferencia_pagamento = ?, observacao = ? WHERE id = ?",
 			ps -> {
 				insert(ps, cliente);
-				ps.setLong(5, cliente.getId());
+				ps.setLong(7, cliente.getId());
 			});
 		return cliente;
 	}
@@ -62,10 +65,14 @@ public class ClienteDAO implements ClienteRepository {
 	// Mappers
 
 	private static void insert(PreparedStatement ps, Cliente c) throws SQLException {
+		Contato contato = Objects.requireNonNull(c.getPrefContato(), "defina o contato antes de salvar.");
+		Pagamento pagamento = Objects.requireNonNull(c.getPrefPagamento(), "defina o pagamento antes de salvar.");
         ps.setString(1, c.getNome());
         ps.setString(2, c.getTelefone());
         ps.setString(3, c.getEndereco());
-        ps.setString(4, c.getObservacao());
+		ps.setString(4, contato.name());
+		ps.setString(5, pagamento.name());
+        ps.setString(6, c.getObservacao());
     }
 
 	private static Cliente mapCliente(ResultSet rs) throws SQLException {
@@ -74,8 +81,19 @@ public class ClienteDAO implements ClienteRepository {
 		c.setNome(rs.getString("nome"));
 		c.setTelefone(rs.getString("telefone"));
 		c.setEndereco(rs.getString("endereco"));
+		c.setPrefContato(readContato(rs, "preferencia_contato"));
+		c.setPrefPagamento(readPagamento(rs, "preferencia_pagamento"));
 		c.setObservacao(rs.getString("observacao"));
 		return c;
+	}
+
+	private static Contato readContato (ResultSet rs, String coluna) throws SQLException {
+		String valor = rs.getString(coluna);
+		return valor == null ? null : Contato.valueOf(valor);
+	}
+	private static Pagamento readPagamento (ResultSet rs, String coluna) throws SQLException {
+		String valor = rs.getString(coluna);
+		return valor == null ? null : Pagamento.valueOf(valor);
 	}
 
 }

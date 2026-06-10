@@ -6,6 +6,8 @@ public class Cliente {
 	private String nome;
 	private String telefone;
 	private String endereco;
+	private Contato prefContato;
+	private Pagamento prefPagamento;
 	private String observacao;
 
 	public Long getId() {
@@ -38,6 +40,22 @@ public class Cliente {
 
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
+	}
+
+		public Contato getPrefContato() {
+		return prefContato;
+	}
+
+	public void setPrefContato(Contato prefContato) {
+		this.prefContato = prefContato;
+	}
+
+	public Pagamento getPrefPagamento() {
+		return prefPagamento;
+	}
+
+	public void setPrefPagamento(Pagamento prefPagamento) {
+		this.prefPagamento = prefPagamento;
 	}
 
 	public String getObservacao() {

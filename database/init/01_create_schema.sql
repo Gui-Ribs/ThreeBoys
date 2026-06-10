@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS material (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     qtde INT NOT NULL CHECK (qtde >= 0),
-    unidadeMedida VARCHAR(50) NOT NULL,
+    unidade_medida VARCHAR(50) NOT NULL,
     marca VARCHAR(100),
     preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0),
     estoque INT NOT NULL CHECK (estoque >= 0),
@@ -42,6 +42,8 @@ CREATE TABLE IF NOT EXISTS cliente (
     nome VARCHAR(100) NOT NULL,
     telefone VARCHAR(20) NOT NULL, 
     endereco VARCHAR(100),
+    preferencia_contato VARCHAR(20) DEFAULT 'WHATSAPP' CHECK (preferencia_contato IN ('WHATSAPP', 'TELEFONE', 'INSTAGRAM')),
+    preferencia_pagamento VARCHAR(20) DEFAULT 'PIX' CHECK (preferencia_pagamento IN ('DINHEIRO', 'PIX', 'DEBITO', 'CREDITO')),
     observacao TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
