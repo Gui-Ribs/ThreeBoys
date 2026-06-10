@@ -26,7 +26,7 @@ public class ProdutoControl {
 		carregar();
 	}
 
-	public Produto toModel(){
+	public Produto toModel() {
 		Produto p = new Produto();
 		p.setNome(nome.get());
 		p.setTamanho(tamanho.get());
@@ -38,7 +38,7 @@ public class ProdutoControl {
 		return p;
 	}
 
-	public void fromModel(Produto p){
+	public void fromModel(Produto p) {
 		id.set(p.getId());
 		nome.set(p.getNome());
 		tamanho.set(p.getTamanho());
@@ -86,12 +86,15 @@ public class ProdutoControl {
 	public StringProperty nomeProperty(){
 		return nome;
 	}
-	public StringProperty chocolateProperty(){
-		return chocolate;
-	}
+
 	public StringProperty tamanhoProperty(){
 		return tamanho;
 	}
+
+	public StringProperty chocolateProperty(){
+		return chocolate;
+	}
+
 	public StringProperty tipoProperty(){
 		return tipo;
 	}
