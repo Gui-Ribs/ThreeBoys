@@ -103,9 +103,13 @@ public class MaterialBoundary {
 		});
 		painelCampos.add(btnDeletar,2,3);
 
+		Button btnLimpar = new Button("Limpar Campos");
+		btnLimpar.setOnAction(e -> controle.limparCampos());
+		painelCampos.add(btnLimpar,3,3);
+
 		Button btnVoltar = new Button("‹ Painel");
 		btnVoltar.setOnAction(e -> scenes.dashboard());
-		painelCampos.add(btnVoltar,3,3);
+		painelCampos.add(btnVoltar,4,3);
 
 		Bindings.bindBidirectional(txtNome.textProperty(), controle.nomeProperty());
 		Bindings.bindBidirectional(txtQtde.textProperty(), controle.qtdeProperty(), new NumberStringConverter());
@@ -140,6 +144,10 @@ public class MaterialBoundary {
 		tabela.getColumns().add(colDescricao);
 
 		tabela.setItems(controle.getLista());
+
+		tabela.getSelectionModel().selectedItemProperty().addListener(
+				(obj, antigo, novo) -> controle.fromModel(novo)
+		);
 
 		principal.setTop(painelCampos);
 		principal.setCenter(tabela);

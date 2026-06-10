@@ -88,6 +88,8 @@ public class MaterialControl {
 			throw new IllegalArgumentException("Selecione um material");
 		}
 		mr.delete(m.getId());
+		carregar();
+		limparCampos();
 	}
 
 	public void carregar() {
