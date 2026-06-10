@@ -49,7 +49,7 @@ public class ProdutoControl {
 		observacao.set(p.getObservacao());
 	}
 
-	public void limparCampos(){
+	public void limparCampos() {
 		id.set(0);
 		nome.set("");
 		tamanho.set("");
@@ -60,7 +60,7 @@ public class ProdutoControl {
 		observacao.set("");
 	}
 
-	public void salvar(){
+	public void salvar() {
 		Produto p = toModel();
 		valid(p);
 		if(p.getId() > 0){
@@ -96,10 +96,11 @@ public class ProdutoControl {
 		lista.addAll(pr.findAll());
 	}
 
-	public ObservableList<Produto> getLista(){
+	public ObservableList<Produto> getLista() {
 		return lista;
 	}
-	public StringProperty nomeProperty(){
+
+	public StringProperty nomeProperty() {
 		return nome;
 	}
 	public StringProperty tamanhoProperty(){
@@ -111,13 +112,13 @@ public class ProdutoControl {
 	public StringProperty tipoProperty(){
 		return tipo;
 	}
-	public DoubleProperty precoProperty(){
+	public DoubleProperty precoProperty() {
 		return preco;
 	}
-	public IntegerProperty qtdeProperty(){
+	public IntegerProperty qtdeProperty() {
 		return qtde;
 	}
-	public StringProperty observacaoProperty(){
+	public StringProperty observacaoProperty() {
 		return observacao;
 	}
 
