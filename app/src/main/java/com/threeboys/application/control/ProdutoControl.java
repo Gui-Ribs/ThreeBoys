@@ -86,15 +86,12 @@ public class ProdutoControl {
 	public StringProperty nomeProperty(){
 		return nome;
 	}
-
-	public StringProperty tamanhoProperty(){
-		return tamanho;
-	}
-
 	public StringProperty chocolateProperty(){
 		return chocolate;
 	}
-
+	public StringProperty tamanhoProperty(){
+		return tamanho;
+	}
 	public StringProperty tipoProperty(){
 		return tipo;
 	}

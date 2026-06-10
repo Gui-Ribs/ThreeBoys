@@ -11,7 +11,7 @@ public class MainApp extends Application {
 	public void start(Stage stage) {
 		LoginBoundary login = new LoginBoundary();
 
-		Scene scene = new Scene(login.getView(), 1000, 800);
+		Scene scene = new Scene(login.getView(), 1000, 600);
 		stage.setTitle("3Boys");
 		stage.setScene(scene);
 		stage.centerOnScreen();
