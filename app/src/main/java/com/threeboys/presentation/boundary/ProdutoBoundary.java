@@ -92,17 +92,17 @@ public class ProdutoBoundary {
                 alert.show();
             }
         });
-        painelCampos.add(btnDeletar,3,3);
+        painelCampos.add(btnDeletar,3,4);
 
         Button btnLimpar = new Button("Limpar");
         btnLimpar.setOnAction((e) -> {
             controle.limparCampos();
         });
-        painelCampos.add(btnDeletar,4,3);
+        painelCampos.add(btnLimpar,4,4);
 
         Button btnVoltar = new Button("‹ Painel");
         btnVoltar.setOnAction(e -> scenes.dashboard());
-        painelCampos.add(btnVoltar,5,3);
+        painelCampos.add(btnVoltar,5,4);
 
         cmbChocolate.setItems(chocolates);
         cmbTipo.setItems(tipos);
