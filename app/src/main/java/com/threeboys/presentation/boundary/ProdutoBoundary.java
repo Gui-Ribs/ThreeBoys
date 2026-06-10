@@ -2,6 +2,7 @@ package com.threeboys.presentation.boundary;
 
 import com.threeboys.application.control.ProdutoControl;
 import com.threeboys.domain.model.Produto;
+import com.threeboys.presentation.navigation.SceneManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -14,7 +15,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.converter.NumberStringConverter;
 
+import java.util.Optional;
+
 public class ProdutoBoundary {
+
+    private ProdutoControl controle;
+    private SceneManager scenes;
 
     private TextField txtNome = new TextField();
     private TextField txtTamanho = new TextField();
@@ -30,7 +36,10 @@ public class ProdutoBoundary {
 
     private TableView<Produto> tabela =new TableView<>();
 
-    private ProdutoControl controle;
+    public ProdutoBoundary(ProdutoControl controle, SceneManager scenes){
+        this.controle = controle;
+        this.scenes = scenes;
+    }
 
     public Pane render(){
         BorderPane principal = new BorderPane();
@@ -57,11 +66,43 @@ public class ProdutoBoundary {
             new Alert(Alert.AlertType.INFORMATION, "Gravado com sucesso.");
         });
         painelCampos.add(btnSalvar,0,4);
+
         Button btnPesquisar = new Button("Pesquisar");
         btnPesquisar.setOnAction((e) -> {
             controle.pesquisar();
         });
         painelCampos.add(btnPesquisar,1,4);
+
+        Button btnDeletar = new Button("Deletar");
+        btnDeletar.setOnAction((e) -> {
+            Produto p = controle.toModel();
+            if(p.getId() > 0) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Apagar este item", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Confirma Delete");
+
+                Optional<ButtonType> resposta = alert.showAndWait();
+
+                if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
+                    controle.deletar();
+                }
+            }else{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selecione um Item");
+                alert.setTitle("Aviso");
+                alert.show();
+            }
+        });
+        painelCampos.add(btnDeletar,3,3);
+
+        Button btnLimpar = new Button("Limpar");
+        btnLimpar.setOnAction((e) -> {
+            controle.limparCampos();
+        });
+        painelCampos.add(btnDeletar,4,3);
+
+        Button btnVoltar = new Button("‹ Painel");
+        btnVoltar.setOnAction(e -> scenes.dashboard());
+        painelCampos.add(btnVoltar,5,3);
 
         cmbChocolate.setItems(chocolates);
         cmbTipo.setItems(tipos);
@@ -113,7 +154,12 @@ public class ProdutoBoundary {
 
         tabela.setItems(controle.getLista());
 
+        tabela.getSelectionModel().selectedItemProperty().addListener(
+                (obj, antigo, novo) -> controle.fromModel(novo)
+        );
+
         principal.setTop(painelCampos);
+        principal.setCenter(tabela);
         return principal;
     }
 }

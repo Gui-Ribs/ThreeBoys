@@ -2,6 +2,8 @@ package com.threeboys.presentation.boundary;
 
 import com.threeboys.application.control.MaterialControl;
 import com.threeboys.domain.model.Material;
+import com.threeboys.domain.model.Produto;
+import com.threeboys.presentation.navigation.SceneManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -15,7 +17,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.converter.NumberStringConverter;
 
+import java.util.Optional;
+
 public class MaterialBoundary {
+
+	private final MaterialControl controle;
+	private final SceneManager scenes;
 
 	private ObservableList<String> unidadesMedidas = FXCollections.observableArrayList("Kg", "g", "por pacote",
 			"por rolo");
@@ -29,10 +36,11 @@ public class MaterialBoundary {
 
 	private TableView<Material> tabela = new TableView<>();
 
-	private MaterialControl controle;
 
-	public MaterialBoundary() {
-		this.controle = new MaterialControl(null);
+
+	public MaterialBoundary(MaterialControl controle, SceneManager scenes) {
+		this.controle = controle;
+		this.scenes = scenes;
 	}
 
 	public Pane render() {
@@ -63,15 +71,41 @@ public class MaterialBoundary {
 
 		Button btnSalvar = new Button("Salvar");
 		btnSalvar.setOnAction((e) -> {
+			controle.salvar();
 			new Alert(Alert.AlertType.INFORMATION, "Salvado com sucesso").show();
 		});
 		painelCampos.add(btnSalvar, 0, 3);
 
 		Button btnPesquisar = new Button("Pesquisar");
 		btnPesquisar.setOnAction((e) -> {
-
+			controle.pesquisar();
 		});
 		painelCampos.add(btnPesquisar, 1, 3);
+
+		Button btnDeletar = new Button("Deletar");
+		btnDeletar.setOnAction((e) -> {
+			Material m = controle.toModel();
+			if(m.getId() > 0) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+						"Apagar este item", ButtonType.YES, ButtonType.NO);
+				alert.setTitle("Confirma Delete");
+
+				Optional<ButtonType> resposta = alert.showAndWait();
+
+				if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
+					controle.deletar();
+				}
+			}else{
+				Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selecione um Item");
+				alert.setTitle("Aviso");
+				alert.show();
+			}
+		});
+		painelCampos.add(btnDeletar,2,3);
+
+		Button btnVoltar = new Button("‹ Painel");
+		btnVoltar.setOnAction(e -> scenes.dashboard());
+		painelCampos.add(btnVoltar,3,3);
 
 		Bindings.bindBidirectional(txtNome.textProperty(), controle.nomeProperty());
 		Bindings.bindBidirectional(txtQtde.textProperty(), controle.qtdeProperty(), new NumberStringConverter());
