@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.threeboys.application.control.ClienteControl;
 import com.threeboys.domain.model.Cliente;
+import com.threeboys.domain.model.Contato;
+import com.threeboys.domain.model.Pagamento;
 import com.threeboys.infrastructure.database.jdbc.helpers.DataAccessException;
 import com.threeboys.presentation.navigation.SceneManager;
 import com.threeboys.presentation.util.Tasks;
@@ -17,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
@@ -39,6 +42,8 @@ public class ClienteBoundary {
     private final TextField fieldNome = new TextField();
     private final TextField fieldTelefone = new TextField();
     private final TextField fieldEndereco = new TextField();
+    private final ComboBox<Contato> comboContato = new ComboBox<>();
+    private final ComboBox<Pagamento> comboPagamento = new ComboBox<>();
     private final TextArea fieldObservacao = new TextArea();
     
     private Cliente newCliente;
@@ -59,6 +64,9 @@ public class ClienteBoundary {
     private void show() {
         buildTable();
         fieldObservacao.setPrefRowCount(2);
+
+        comboContato.getItems().setAll(Contato.values());
+        comboPagamento.getItems().setAll(Pagamento.values());
  
         GridPane form = new GridPane();
         form.setHgap(8);
@@ -66,16 +74,18 @@ public class ClienteBoundary {
         form.addRow(0, new Label("Nome"), fieldNome);
         form.addRow(1, new Label("Telefone"), fieldTelefone);
         form.addRow(2, new Label("Endereço"), fieldEndereco);
-        form.addRow(3, new Label("Observação"), fieldObservacao);
+        form.addRow(3, new Label("Preferencia por Contato"), comboContato);
+        form.addRow(4, new Label("Preferencia por Pagamento"), comboPagamento);
+        form.addRow(5, new Label("Observação"), fieldObservacao);
  
         Button voltar = new Button("‹ Painel");
         voltar.setOnAction(e -> scenes.dashboard());
  
         Button novo = new Button("Novo");
-        novo.setOnAction(e -> limparForm());
+        novo.setOnAction(e -> clean());
  
         Button salvar = new Button("Salvar");
-        salvar.setOnAction(e -> salve());
+        salvar.setOnAction(e -> save());
  
         Button remover = new Button("Remover");
         remover.setOnAction(e -> removeSelected());
@@ -95,16 +105,24 @@ public class ClienteBoundary {
  
         TableColumn<Cliente, String> colTelefone = new TableColumn<>("Telefone");
         colTelefone.setCellValueFactory(c -> new ReadOnlyStringWrapper(nz(c.getValue().getTelefone())));
- 
+
         TableColumn<Cliente, String> colEndereco = new TableColumn<>("Endereço");
         colEndereco.setCellValueFactory(c -> new ReadOnlyStringWrapper(nz(c.getValue().getEndereco())));
  
-        tabela.getColumns().addAll(List.of(colNome, colTelefone, colEndereco));
+        TableColumn<Cliente, String> colContato = new TableColumn<>("Contato");
+        colContato.setCellValueFactory(c -> new ReadOnlyStringWrapper(
+            c.getValue().getPrefContato() == null ? "" : c.getValue().getPrefContato().name()));
+
+        TableColumn<Cliente, String> colPagamento = new TableColumn<>("Pagamento");
+        colPagamento.setCellValueFactory(c -> new ReadOnlyStringWrapper(
+            c.getValue().getPrefPagamento() == null ? "" : c.getValue().getPrefPagamento().name()));
+
+        tabela.getColumns().addAll(List.of(colNome, colTelefone, colEndereco, colContato, colPagamento));
         tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // TODO: Atualizar, não recomendo usar, é só teste
  
         tabela.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novo) -> {
             if (novo != null) {
-                preencherForm(novo);
+                populateForm(novo);
             }
         });
     }
@@ -113,21 +131,23 @@ public class ClienteBoundary {
         Tasks.run(control::list, clientes::setAll, this::showErro);
     }
  
-    private void salve() {
+    private void save() {
         Cliente cliente = new Cliente();
         if (newCliente != null) {
             cliente.setId(newCliente.getId());
         }
         cliente.setNome(fieldNome.getText());
         cliente.setTelefone(fieldTelefone.getText());
-        cliente.setEndereco(textoOuNull(fieldEndereco.getText()));
-        cliente.setObservacao(textoOuNull(fieldObservacao.getText()));
- 
+        cliente.setEndereco(textOrNull(fieldEndereco.getText()));
+        cliente.setPrefContato(comboContato.getValue());
+        cliente.setPrefPagamento(comboPagamento.getValue());
+        cliente.setObservacao(textOrNull(fieldObservacao.getText()));
+
         boolean novo = (newCliente == null);
         Tasks.run(
                 () -> novo ? control.save(cliente) : control.update(cliente),
                 salvo -> {
-                    limparForm();
+                    clean();
                     load();
                 },
                 this::showErro); // validação do Control nome & telefone cai aqui como um Alert
@@ -146,27 +166,31 @@ public class ClienteBoundary {
         if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
             Tasks.runVoid(() -> control.delete(selecionado.getId()),
                     () -> {
-                        limparForm();
+                        clean();
                         load();
                     },
                     this::showErro);
         }
     }
  
-    private void preencherForm(Cliente c) {
+    private void populateForm(Cliente c) {
         newCliente = c;
         fieldNome.setText(nz(c.getNome()));
         fieldTelefone.setText(nz(c.getTelefone()));
         fieldEndereco.setText(nz(c.getEndereco()));
+        comboContato.setValue(c.getPrefContato() == null ? Contato.WHATSAPP : c.getPrefContato());
+        comboPagamento.setValue(c.getPrefPagamento() == null ? Pagamento.PIX : c.getPrefPagamento());
         fieldObservacao.setText(nz(c.getObservacao()));
     }
  
-    private void limparForm() {
+    private void clean() {
         newCliente = null;
         tabela.getSelectionModel().clearSelection();
         fieldNome.clear();
         fieldTelefone.clear();
         fieldEndereco.clear();
+        comboContato.setValue(Contato.WHATSAPP);
+        comboPagamento.setValue(Pagamento.PIX);
         fieldObservacao.clear();
     }
 
@@ -174,7 +198,7 @@ public class ClienteBoundary {
         return s == null ? "" : s;
     }
  
-    private static String textoOuNull(String s) {
+    private static String textOrNull(String s) {
         return (s == null || s.isBlank()) ? null : s;
     }
  

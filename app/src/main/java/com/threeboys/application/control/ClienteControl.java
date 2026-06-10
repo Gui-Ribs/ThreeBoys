@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.threeboys.application.repository.ClienteRepository;
+import com.threeboys.application.repository.PedidoRepository;
 import com.threeboys.domain.model.Cliente;
 
 public class ClienteControl {
 
 	private final ClienteRepository repository;
+	private final PedidoRepository pedidoRepository;
 
-	public ClienteControl(ClienteRepository repository) {
+	public ClienteControl(ClienteRepository repository, PedidoRepository pedidoRepository) {
 		this.repository = repository;
+		this.pedidoRepository = pedidoRepository;
 	}
 
 	public List<Cliente> list() {
@@ -36,6 +39,9 @@ public class ClienteControl {
 	}
 
 	public void delete(long id) {
+		if (pedidoRepository.existsByClienteId(id)) {
+			throw new IllegalArgumentException("Não é possível excluir clientes que já possuam pedidos cadastrados");
+		}
 		repository.delete(id);
 	}
 
