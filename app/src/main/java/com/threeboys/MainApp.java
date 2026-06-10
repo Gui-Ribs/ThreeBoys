@@ -1,19 +1,24 @@
 package com.threeboys;
 
-import com.threeboys.presentation.boundary.LoginBoundary;
+import com.threeboys.config.AppFactory;
+import com.threeboys.presentation.navigation.SceneManager;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		LoginBoundary login = new LoginBoundary();
 
-		Scene scene = new Scene(login.getView(), 1000, 600);
+		AppFactory factory = AppFactory.getInstance();
+		factory.validConnection();
+
+		SceneManager scenes = new SceneManager(stage, factory);
+
+		scenes.clientes();
+
+		//Scene scene = new Scene(.getView(), 1000, 800);
 		stage.setTitle("3Boys");
-		stage.setScene(scene);
 		stage.centerOnScreen();
 		stage.show();
 	}

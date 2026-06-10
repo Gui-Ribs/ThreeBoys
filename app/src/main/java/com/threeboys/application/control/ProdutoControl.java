@@ -26,7 +26,7 @@ public class ProdutoControl {
 		carregar();
 	}
 
-	public Produto toModel(){
+	public Produto toModel() {
 		Produto p = new Produto();
 		p.setNome(nome.get());
 		p.setTamanho(tamanho.get());
@@ -38,7 +38,7 @@ public class ProdutoControl {
 		return p;
 	}
 
-	public void fromModel(Produto p){
+	public void fromModel(Produto p) {
 		id.set(p.getId());
 		nome.set(p.getNome());
 		tamanho.set(p.getTamanho());
@@ -49,7 +49,7 @@ public class ProdutoControl {
 		observacao.set(p.getObservacao());
 	}
 
-	public void limparCampos(){
+	public void limparCampos() {
 		id.set(0);
 		nome.set("");
 		tamanho.set("");
@@ -60,30 +60,30 @@ public class ProdutoControl {
 		observacao.set("");
 	}
 
-	public void salvar(){
+	public void salvar() {
 		Produto p = toModel();
 
 		carregar();
 		limparCampos();
 	}
 
-	public void pesquisar(){
+	public void pesquisar() {
 
 	}
 
-	public void deletar(){
+	public void deletar() {
 
 	}
 
-	public void carregar(){
+	public void carregar() {
 
 	}
 
-	public ObservableList<Produto> getLista(){
+	public ObservableList<Produto> getLista() {
 		return lista;
 	}
 
-	public StringProperty nomeProperty(){
+	public StringProperty nomeProperty() {
 		return nome;
 	}
 	public StringProperty chocolateProperty(){
@@ -95,13 +95,13 @@ public class ProdutoControl {
 	public StringProperty tipoProperty(){
 		return tipo;
 	}
-	public DoubleProperty precoProperty(){
+	public DoubleProperty precoProperty() {
 		return preco;
 	}
-	public IntegerProperty qtdeProperty(){
+	public IntegerProperty qtdeProperty() {
 		return qtde;
 	}
-	public StringProperty observacaoProperty(){
+	public StringProperty observacaoProperty() {
 		return observacao;
 	}
 }
