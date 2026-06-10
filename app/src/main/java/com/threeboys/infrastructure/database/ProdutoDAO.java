@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public class ProdutoDAO implements ProdutoRepository {
 
@@ -20,7 +19,7 @@ public class ProdutoDAO implements ProdutoRepository {
 
 	@Override
 	public List<Produto> findAll() {
-		return execute.query("SELECT * FROM produto ORDER BY nome",
+		return execute.query("SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM produto ORDER BY nome",
 				ps -> { }, // Sem parâmetros ou seja "?" em um WHERE
 				ProdutoDAO::mapProduto);
 	}
@@ -28,7 +27,7 @@ public class ProdutoDAO implements ProdutoRepository {
 	@Override
 	public List<Produto> findByName(String nome) {
 		return execute.query(
-				"SELECT * FROM material WHERE nome LIKE ?",
+				"SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM material WHERE nome LIKE ?",
 				ps -> ps.setString(1, "%" + nome + "%"),
 				ProdutoDAO::mapProduto
 		);
@@ -80,7 +79,7 @@ public class ProdutoDAO implements ProdutoRepository {
 		Produto p = new Produto();
 		p.setId(rs.getLong("id"));
 		p.setNome(rs.getString("nome"));
-		p.setQtde(rs.getInt("tamanho"));
+		p.setTamanho(rs.getString("tamanho"));
 		p.setChocolate(rs.getString("chocolate"));
 		p.setTipo(rs.getString("tipo"));
 		p.setPreco(rs.getDouble("preco"));

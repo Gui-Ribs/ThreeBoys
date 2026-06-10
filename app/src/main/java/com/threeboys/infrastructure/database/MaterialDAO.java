@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public class MaterialDAO implements MaterialRepository {
 
@@ -21,7 +20,7 @@ public class MaterialDAO implements MaterialRepository {
 
 	@Override
 	public List<Material> findAll() {
-		return execute.query("SELECT * FROM material ORDER BY nome",
+		return execute.query("SELECT id, nome, qtde, unidade_medida, marca, preco, estoque, descricao FROM material ORDER BY nome",
 				ps -> { }, // Sem parâmetros ou seja "?" em um WHERE
 				MaterialDAO::mapMaterial);
 	}
@@ -29,7 +28,7 @@ public class MaterialDAO implements MaterialRepository {
 	@Override
 	public List<Material> findByName(String nome) {
 		return execute.query(
-				"SELECT * FROM material WHERE nome LIKE ?",
+				"SELECT id, nome, qtde, unidade_medida, marca, preco, estoque, descricao FROM material WHERE nome LIKE ?",
 				ps -> ps.setString(1, "%" + nome + "%"),
 				MaterialDAO::mapMaterial
 		);
@@ -38,7 +37,7 @@ public class MaterialDAO implements MaterialRepository {
 	@Override
 	public Material save(Material material) {
 		long id = execute.insertById(
-				"INSERT INTO material (nome, qtde, unidadeMedida, marca, preco, estoque, descricao)" +
+				"INSERT INTO material (nome, qtde, unidade_medida, marca, preco, estoque, descricao)" +
 						"VALUES (?,?,?,?,?,?,?)",
 				ps -> insert(ps, material)
 		);
@@ -50,7 +49,7 @@ public class MaterialDAO implements MaterialRepository {
 	public Material update(Material material) {
 		execute.update(
 				"UPDATE material " +
-						"SET nome = ?, qtde = ?, unidadeMedida = ?, marca = ?, preco = ?, estoque = ?, descricao = ?" +
+						"SET nome = ?, qtde = ?, unidade_medida = ?, marca = ?, preco = ?, estoque = ?, descricao = ?" +
 						"WHERE id = ?",
 				ps -> {
 					insert(ps, material);
@@ -82,7 +81,7 @@ public class MaterialDAO implements MaterialRepository {
 		m.setId(rs.getLong("id"));
 		m.setNome(rs.getString("nome"));
 		m.setQtde(rs.getInt("qtde"));
-		m.setUnidadeMedida(rs.getString("unidadeMedidda"));
+		m.setUnidadeMedida(rs.getString("unidade_medida"));
 		m.setMarca(rs.getString("marca"));
 		m.setPreco(rs.getDouble("preco"));
 		m.setEstoque(rs.getInt("estoque"));
