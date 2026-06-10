@@ -19,7 +19,6 @@ public class MainApp extends Application {
 
 		//Scene scene = new Scene(.getView(), 1000, 800);
 		stage.setTitle("3Boys");
-		stage.setScene(scene);
 		stage.centerOnScreen();
 		stage.show();
 	}

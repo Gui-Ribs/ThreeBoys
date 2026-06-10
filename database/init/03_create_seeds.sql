@@ -7,12 +7,12 @@ INSERT INTO `user` (name, email, password, role) VALUES
 SET @user_admin = LAST_INSERT_ID();
 SET @user_funcionario = @user_admin + 1;
 
-INSERT INTO produto (nome, chocolate, tipo, preco, qtde, observacao) VALUES
-('Brigadeiro Tradicional', 'Chocolate ao leite', 'Brigadeiro', 4.50, 100, 'Produto clássico da casa'),
-('Trufa de Morango', 'Chocolate branco', 'Trufa', 6.00, 80, 'Recheio de morango'),
-('Barra Recheada', 'Chocolate meio amargo', 'Barra', 12.00, 50, 'Barra artesanal recheada'),
-('Ovo de Colher', 'Chocolate ao leite', 'Ovo de Páscoa', 45.00, 20, 'Ovo recheado com brigadeiro'),
-('Brownie de Chocolate', 'Chocolate meio amargo', 'Brownie', 8.50, 60, 'Brownie individual');
+INSERT INTO produto (nome, tamanho, chocolate, tipo, preco, qtde, observacao) VALUES
+('Ovo', '100g','Ao leite', 'Brigadeiro', 10.50, 100, 'Produto clássico da casa'),
+('Trufa', 'padrao', 'Ao Leite', 'Normal', 6.00, 80, 'Recheio de morango'),
+('Barra Recheada', 'medio','50%', 'Trufado', 12.00, 10, 'Barra artesanal recheada com prestigio'),
+('Ovo', '300g', 'Ao leite', 'Colher', 45.00, 5, 'Ovo recheado com brigadeiro'),
+('Pirulito', 'grande', 'Branco', 'Crocante', 8.50, 60, 'Crocante de flocos de arroz');
 
 SET @produto_brigadeiro = LAST_INSERT_ID();
 SET @produto_trufa = @produto_brigadeiro + 1;

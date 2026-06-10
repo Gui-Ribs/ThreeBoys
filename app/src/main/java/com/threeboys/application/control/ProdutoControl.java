@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 
 public class ProdutoControl {
 
-	private final ProdutoRepository produtoRepository;
+	private final ProdutoRepository pr;
 
 	private ObservableList<Produto> lista = FXCollections.observableArrayList();
 
@@ -22,7 +22,7 @@ public class ProdutoControl {
 	private StringProperty observacao = new SimpleStringProperty("");
 
 	public ProdutoControl(ProdutoRepository produtoRepository) {
-		this.produtoRepository = produtoRepository;
+		this.pr = produtoRepository;
 		carregar();
 	}
 
@@ -62,39 +62,52 @@ public class ProdutoControl {
 
 	public void salvar(){
 		Produto p = toModel();
-
+		valid(p);
+		if(p.getId() > 0){
+			atualizar(p);
+		}else{
+			cadastrar(p);
+		}
 		carregar();
 		limparCampos();
 	}
 
 	public void pesquisar(){
-
+		lista.clear();
+		lista.addAll(pr.findByName(nome.get()));
 	}
 
 	public void deletar(){
-
+		Produto produto = toModel();
+		if (empty(String.valueOf(produto.getId()))) {
+			throw new IllegalArgumentException("Selecione um produto");
+		}
+		pr.delete(produto.getId());
 	}
 
-	public void carregar(){
+	private void atualizar(Produto produto){
+		pr.update(produto);
+	}
 
+	private void cadastrar(Produto produto){
+		pr.save(produto);
+	}
+	public void carregar(){
+		lista.addAll(pr.findAll());
 	}
 
 	public ObservableList<Produto> getLista(){
 		return lista;
 	}
-
 	public StringProperty nomeProperty(){
 		return nome;
 	}
-
 	public StringProperty tamanhoProperty(){
 		return tamanho;
 	}
-
 	public StringProperty chocolateProperty(){
 		return chocolate;
 	}
-
 	public StringProperty tipoProperty(){
 		return tipo;
 	}
@@ -106,5 +119,30 @@ public class ProdutoControl {
 	}
 	public StringProperty observacaoProperty(){
 		return observacao;
+	}
+
+	private void valid(Produto produto) {
+		if (empty(produto.getNome())) {
+			throw new IllegalArgumentException("O nome do cliente não pode ser nulo");
+		}
+		if (empty(produto.getTamanho())) {
+			throw new IllegalArgumentException("O tamanho não pode ser nulo");
+		}
+		if (empty(produto.getChocolate())) {
+			throw new IllegalArgumentException("O chocolate não pode ser nulo");
+		}
+		if (empty(produto.getTipo())) {
+			throw new IllegalArgumentException("O tipo não pode ser nulo");
+		}
+		if (empty(String.valueOf(produto.getPreco()))) {
+			throw new IllegalArgumentException("O preço não pode ser nulo");
+		}
+		if (empty(String.valueOf(produto.getQtde()))) {
+			throw new IllegalArgumentException("A quantidade não pode ser nulo");
+		}
+	}
+
+	private static boolean empty(String x) {
+		return x == null || x.isBlank();
 	}
 }
