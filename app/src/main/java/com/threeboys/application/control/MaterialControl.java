@@ -27,7 +27,7 @@ public class MaterialControl {
 		carregar();
 	}
 
-	public Material toModel(){
+	public Material toModel() {
 		Material m = new Material();
 		m.setId(id.get());
 		m.setNome(nome.get());
@@ -40,8 +40,8 @@ public class MaterialControl {
 		return m;
 	}
 
-	public void fromModel(Material m){
-		if(m != null){
+	public void fromModel(Material m) {
+		if (m != null) {
 			id.set(m.getId());
 			nome.set(m.getNome());
 			qtde.set(m.getQtde());
@@ -53,7 +53,7 @@ public class MaterialControl {
 		}
 	}
 
-	public void limparCampos(){
+	public void limparCampos() {
 		id.set(0);
 		nome.set("");
 		qtde.set(0);
@@ -64,54 +64,54 @@ public class MaterialControl {
 		descricao.set("");
 	}
 
-	public void salvar(){
+	public void salvar() {
 		Material m = toModel();
 
 		carregar();
 		limparCampos();
 	}
 
-	public void pesquisar(){
+	public void pesquisar() {
 
 	}
 
-	public void deletar(){
+	public void deletar() {
 
 	}
 
-	public void carregar(){
+	public void carregar() {
 
 	}
 
-	public ObservableList<Material> getLista(){
+	public ObservableList<Material> getLista() {
 		return lista;
 	}
 
-	public StringProperty nomeProperty(){
+	public StringProperty nomeProperty() {
 		return nome;
 	}
 
-	public IntegerProperty qtdeProperty(){
+	public IntegerProperty qtdeProperty() {
 		return qtde;
 	}
 
-	public StringProperty unidadeMedidaProperty(){
+	public StringProperty unidadeMedidaProperty() {
 		return unidadeMedida;
 	}
 
-	public StringProperty marcaProperty(){
+	public StringProperty marcaProperty() {
 		return marca;
 	}
 
-	public DoubleProperty precoProperty(){
+	public DoubleProperty precoProperty() {
 		return preco;
 	}
 
-	public IntegerProperty estoqueProperty(){
+	public IntegerProperty estoqueProperty() {
 		return estoque;
 	}
 
-	public StringProperty descricaoProperty(){
+	public StringProperty descricaoProperty() {
 		return descricao;
 	}
 }
