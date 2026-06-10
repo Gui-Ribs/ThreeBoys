@@ -90,7 +90,7 @@ public class JdbcExecutor {
 
 	public int update(String sql, StatementPreparer preparer) {
 		Connection cn = null;
-
+		String format = sql.strip().split("\\s+", 2)[0].toUpperCase();
 		try {
 			cn = getConnection();
 			try (PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -98,7 +98,7 @@ public class JdbcExecutor {
 				return ps.executeUpdate();
 			}
 		} catch (SQLException e) {
-			throw new DataAccessException(String.format("Erro ao executar a DMl (Insert, Update ou Delete): ", sql), e);
+			throw new DataAccessException(String.format("Erro ao executar: %s", format), e);
 		} finally {
 			release(cn);
 		}

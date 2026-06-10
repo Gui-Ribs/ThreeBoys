@@ -145,4 +145,8 @@ public class MaterialBoundary {
 		principal.setCenter(tabela);
 		return principal;
 	}
+
+	public Pane getView() {
+		return render();
+	}
 }

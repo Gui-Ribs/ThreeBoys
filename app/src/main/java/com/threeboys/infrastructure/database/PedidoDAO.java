@@ -28,7 +28,7 @@ public class PedidoDAO implements PedidoRepository {
 	@Override
 	public List<Pedido> findAll() {
 		return execute.query("""
-				SELECT id, cliente_id,, valor_total, status_pedido,
+				SELECT id, cliente_id, valor_total, status_pedido,
 					data_pedido, data_entrega, observacao
 				FROM pedido
 				ORDER BY data_pedido DESC
@@ -107,6 +107,15 @@ public class PedidoDAO implements PedidoRepository {
 			execute.update("DELETE * FROM item_pedido WHERE pedido_id = ?", ps -> ps.setLong(1, id));
 			execute.update("DELETE * FROM pedido WHERE id = ?", ps -> ps.setLong(1, id));
 		});
+	}
+	
+	@Override
+	public boolean existsByClienteId(long id) {
+		return execute.queryObject(
+				"SELECT EXISTS(SELECT 1 FROM pedido WHERE cliente_id = ?)",
+				ps -> ps.setLong(1, id),
+				rs -> rs.getBoolean(1))
+			.orElse(false);
 	}
 
 	// Helpers e validações
