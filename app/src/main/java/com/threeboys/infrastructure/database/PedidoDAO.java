@@ -50,9 +50,11 @@ public class PedidoDAO implements PedidoRepository {
 				        i.produto_id,
 				        i.quantidade,
 				        i.preco_unitario,
-				        i.subtotal
+				        i.subtotal,
+						pr.nome 		AS produto_nome
 				FROM pedido p
 				LEFT JOIN item_pedido i ON i.pedido_id = p.id
+				LEFT JOIN produto pr on pr.id = i.produto_id
 				WHERE p.id = ?
 				""", ps -> ps.setLong(1, id), PedidoDAO::pedidoItens);
 		return Optional.ofNullable(pedido);
@@ -104,18 +106,59 @@ public class PedidoDAO implements PedidoRepository {
 	@Override
 	public void delete(long id) {
 		execute.inTransaction(() -> {
-			execute.update("DELETE * FROM item_pedido WHERE pedido_id = ?", ps -> ps.setLong(1, id));
-			execute.update("DELETE * FROM pedido WHERE id = ?", ps -> ps.setLong(1, id));
+			execute.update("DELETE FROM item_pedido WHERE pedido_id = ?", ps -> ps.setLong(1, id));
+			execute.update("DELETE FROM pedido WHERE id = ?", ps -> ps.setLong(1, id));
 		});
 	}
-	
+
+	@Override
+	public Pedido update(Pedido pedido) {
+		StatusPedido status = Objects.requireNonNull(pedido.getStatusPedido(),
+				"status_pedido e NOT NULL; defina o status antes de salvar.");
+
+		execute.inTransaction(() -> {
+			execute.update("""
+					UPDATE pedido
+					SET cliente_id = ?, status_pedido = ?, data_entrega = ?, observacao = ?
+					WHERE id = ?
+					""", ps -> {
+				ps.setLong(1, pedido.getCliente().getId());
+				ps.setString(2, status.name());
+				ps.setDate(3, pedido.getDataEntrega());
+				ps.setString(4, pedido.getObservacao());
+				ps.setLong(5, pedido.getId());
+			});
+
+			execute.update("DELETE FROM item_pedido WHERE pedido_id = ?", ps -> ps.setLong(1, pedido.getId()));
+
+			for (ItemPedido item : pedido.getItens()) {
+				item.setPedido(pedido);
+				execute.update("""
+						INSERT INTO item_pedido (pedido_id, produto_id, quantidade, preco_unitario)
+						VALUES (?, ?, ?, ?)
+						""", ps -> {
+					ps.setLong(1, pedido.getId());
+					ps.setLong(2, item.getProduto().getId());
+					ps.setInt(3, item.getQuantidade());
+					ps.setBigDecimal(4, item.getPrecoUnitario());
+				});
+				item.setSubtotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
+			}
+
+			execute.queryObject("SELECT valor_total FROM pedido WHERE id = ?", ps -> ps.setLong(1, pedido.getId()),
+					rs -> {
+						BigDecimal vt = rs.getBigDecimal("valor_total");
+						pedido.setValorTotal(vt == null ? BigDecimal.ZERO : vt);
+						return pedido;
+					});
+		});
+		return pedido;
+	}
+
 	@Override
 	public boolean existsByClienteId(long id) {
-		return execute.queryObject(
-				"SELECT EXISTS(SELECT 1 FROM pedido WHERE cliente_id = ?)",
-				ps -> ps.setLong(1, id),
-				rs -> rs.getBoolean(1))
-			.orElse(false);
+		return execute.queryObject("SELECT EXISTS(SELECT 1 FROM pedido WHERE cliente_id = ?)", ps -> ps.setLong(1, id),
+				rs -> rs.getBoolean(1)).orElse(false);
 	}
 
 	// Helpers e validações
@@ -143,7 +186,7 @@ public class PedidoDAO implements PedidoRepository {
 
 	private static Pedido mapPedido(ResultSet rs) throws SQLException {
 		Pedido p = new Pedido();
-		p.setId(null);
+		p.setId(rs.getLong("id"));
 		p.setCliente(clienteRef(rs.getLong("cliente_id")));
 		p.setValorTotal(rs.getBigDecimal("valor_total"));
 		p.setStatusPedido(readStatus(rs, "status_pedido"));
@@ -156,7 +199,7 @@ public class PedidoDAO implements PedidoRepository {
 	private static ItemPedido mapItem(ResultSet rs) throws SQLException {
 		ItemPedido item = new ItemPedido();
 		item.setId(rs.getLong("item_id"));
-		item.setProduto(produtoRef(rs.getLong("produto_id")));
+		item.setProduto(produtoRef(rs.getLong("produto_id"), rs.getString("produto_nome")));
 		item.setQuantidade(rs.getInt("quantidade"));
 		item.setPrecoUnitario(rs.getBigDecimal("preco_unitario"));
 		item.setSubtotal(rs.getBigDecimal("subtotal")); // coluna gerada no banco
@@ -168,9 +211,10 @@ public class PedidoDAO implements PedidoRepository {
 		return valor == null ? null : StatusPedido.valueOf(valor);
 	}
 
-	private static Produto produtoRef(long produtoId) {
+	private static Produto produtoRef(long produtoId, String nome) {
 		Produto p = new Produto();
 		p.setId(produtoId);
+		p.setNome(nome);
 		return p;
 	}
 
