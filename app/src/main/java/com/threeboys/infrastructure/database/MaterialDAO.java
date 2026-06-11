@@ -3,7 +3,6 @@ package com.threeboys.infrastructure.database;
 import com.threeboys.application.repository.MaterialRepository;
 import com.threeboys.domain.model.Material;
 import com.threeboys.infrastructure.database.jdbc.JdbcExecutor;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,11 +16,12 @@ public class MaterialDAO implements MaterialRepository {
 		this.execute = jbdcExecutor;
 	}
 
-
 	@Override
 	public List<Material> findAll() {
-		return execute.query("SELECT id, nome, qtde, unidade_medida, marca, preco, estoque, descricao FROM material ORDER BY nome",
-				ps -> { }, // Sem parâmetros ou seja "?" em um WHERE
+		return execute.query(
+				"SELECT id, nome, qtde, unidade_medida, marca, preco, estoque, descricao FROM material ORDER BY nome",
+				ps -> {
+				}, // Sem parâmetros ou seja "?" em um WHERE
 				MaterialDAO::mapMaterial);
 	}
 
@@ -29,41 +29,32 @@ public class MaterialDAO implements MaterialRepository {
 	public List<Material> findByName(String nome) {
 		return execute.query(
 				"SELECT id, nome, qtde, unidade_medida, marca, preco, estoque, descricao FROM material WHERE nome LIKE ?",
-				ps -> ps.setString(1, "%" + nome + "%"),
-				MaterialDAO::mapMaterial
-		);
+				ps -> ps.setString(1, "%" + nome + "%"), MaterialDAO::mapMaterial);
 	}
 
 	@Override
 	public Material save(Material material) {
-		long id = execute.insertById(
-				"INSERT INTO material (nome, qtde, unidade_medida, marca, preco, estoque, descricao)" +
-						"VALUES (?,?,?,?,?,?,?)",
-				ps -> insert(ps, material)
-		);
+		long id = execute
+				.insertById("INSERT INTO material (nome, qtde, unidade_medida, marca, preco, estoque, descricao)"
+						+ "VALUES (?,?,?,?,?,?,?)", ps -> insert(ps, material));
 		material.setId(id);
 		return material;
 	}
 
 	@Override
 	public Material update(Material material) {
-		execute.update(
-				"UPDATE material " +
-						"SET nome = ?, qtde = ?, unidade_medida = ?, marca = ?, preco = ?, estoque = ?, descricao = ?" +
-						"WHERE id = ?",
-				ps -> {
+		execute.update("UPDATE material "
+				+ "SET nome = ?, qtde = ?, unidade_medida = ?, marca = ?, preco = ?, estoque = ?, descricao = ?"
+				+ "WHERE id = ?", ps -> {
 					insert(ps, material);
 					ps.setLong(8, material.getId());
-				}
-		);
+				});
 		return material;
 	}
 
 	@Override
 	public void delete(long id) {
-		execute.update(
-				"DELETE FROM material WHERE id = ?",
-				ps -> ps.setLong(1, id));
+		execute.update("DELETE FROM material WHERE id = ?", ps -> ps.setLong(1, id));
 	}
 
 	private static void insert(PreparedStatement ps, Material m) throws SQLException {
