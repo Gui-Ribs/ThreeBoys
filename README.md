@@ -61,6 +61,6 @@ make help
 > Caso não utilize o makefile e o docker
 
 1. Instale o Mysql Server;
-1. Crie o banco manualmente e Execute os Scripts em database/init;
+1. Crie o banco manualmente e Execute os Scripts em ```database/init```;
 1. Edite a o arquivo .env.example, faça as alterações que necessitar (Ou deixe como está, só altere o nome para .env);
-1. Configure a sua IDE para executar com as envs Ou execute o comando do bloco 4 com o wrapper ou o grandle instalado.
+1. Configure a sua IDE para executar com as envs Ou execute o comando do bloco 4 com o wrapper ou com grandle instalado.
