@@ -42,7 +42,7 @@ public class Cliente {
 		this.endereco = endereco;
 	}
 
-		public Contato getPrefContato() {
+	public Contato getPrefContato() {
 		return prefContato;
 	}
 
