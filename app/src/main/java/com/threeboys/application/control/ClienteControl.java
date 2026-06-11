@@ -1,11 +1,10 @@
 package com.threeboys.application.control;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.threeboys.application.repository.ClienteRepository;
 import com.threeboys.application.repository.PedidoRepository;
 import com.threeboys.domain.model.Cliente;
+import java.util.List;
+import java.util.Optional;
 
 public class ClienteControl {
 
@@ -26,12 +25,12 @@ public class ClienteControl {
 	}
 
 	public Cliente save(Cliente cliente) {
-    	valid(cliente);
-    	return repository.save(cliente);
+		valid(cliente);
+		return repository.save(cliente);
 	}
 
 	public Cliente update(Cliente cliente) {
-		if(cliente.getId() == null) {
+		if (cliente.getId() == null) {
 			throw new IllegalArgumentException("Não foi possível recuperar o cliente com o id nulo");
 		}
 		valid(cliente);
@@ -46,13 +45,16 @@ public class ClienteControl {
 	}
 
 	private void valid(Cliente cliente) {
-		if (empty(cliente.getNome())) {
-			throw new IllegalArgumentException("O nome do cliente não pode ser nulo");
+		if (empty(cliente.getNome()) || cliente.getNome().length() > 50) {
+			throw new IllegalArgumentException("O nome do cliente deve ser informado e ter no máximo 100 caracteres");
 		}
-		if (empty(cliente.getTelefone())) {
-			throw new IllegalArgumentException("O telefone não pode ser nulo");
+		if (empty(cliente.getTelefone()) || cliente.getTelefone().length() > 20) {
+			throw new IllegalArgumentException("O telefone deve ser informado e ter no máximo 20 caracteres");
 		}
-	} 
+		if (cliente.getEndereco().length() > 100) {
+			throw new IllegalArgumentException("Endereço deve ter no máximo 100 caracteres");
+		}
+	}
 
 	private static boolean empty(String x) {
 		return x == null || x.isBlank();
