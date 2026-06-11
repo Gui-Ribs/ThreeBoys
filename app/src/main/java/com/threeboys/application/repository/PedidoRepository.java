@@ -8,6 +8,7 @@ public interface PedidoRepository {
 	List<Pedido> findAll();
 	Optional<Pedido> findById(long id);
 	Pedido save(Pedido pedido);
+	Pedido update(Pedido pedido);
 	void delete(long id);
 	boolean existsByClienteId(long id);
 }
