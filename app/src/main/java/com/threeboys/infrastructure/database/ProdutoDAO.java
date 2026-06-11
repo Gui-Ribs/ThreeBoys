@@ -3,7 +3,6 @@ package com.threeboys.infrastructure.database;
 import com.threeboys.application.repository.ProdutoRepository;
 import com.threeboys.domain.model.Produto;
 import com.threeboys.infrastructure.database.jdbc.JdbcExecutor;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,50 +18,41 @@ public class ProdutoDAO implements ProdutoRepository {
 
 	@Override
 	public List<Produto> findAll() {
-		return execute.query("SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM produto ORDER BY nome",
-				ps -> { }, // Sem parâmetros ou seja "?" em um WHERE
+		return execute.query(
+				"SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM produto ORDER BY nome", ps -> {
+				}, // Sem parâmetros ou seja "?" em um WHERE
 				ProdutoDAO::mapProduto);
 	}
 
 	@Override
 	public List<Produto> findByName(String nome) {
 		return execute.query(
-				"SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM material WHERE nome LIKE ?",
-				ps -> ps.setString(1, "%" + nome + "%"),
-				ProdutoDAO::mapProduto
-		);
+				"SELECT id, nome, tamanho, chocolate, tipo, preco, qtde, observacao FROM produto WHERE nome LIKE ?",
+				ps -> ps.setString(1, "%" + nome + "%"), ProdutoDAO::mapProduto);
 	}
 
 	@Override
 	public Produto save(Produto produto) {
-		long id = execute.insertById(
-				"INSERT INTO produto (nome, tamanho, chocolate, tipo, preco, qtde, observacao)" +
-						"VALUES (?,?,?,?,?,?,?)",
-				ps -> insert(ps, produto)
-		);
+		long id = execute.insertById("INSERT INTO produto (nome, tamanho, chocolate, tipo, preco, qtde, observacao)"
+				+ "VALUES (?,?,?,?,?,?,?)", ps -> insert(ps, produto));
 		produto.setId(id);
 		return produto;
 	}
 
 	@Override
 	public Produto update(Produto produto) {
-		execute.update(
-				"UPDATE produto " +
-						"SET nome = ?, tamanho = ?, chocolate = ?, tipo = ?, preco = ?, qtde = ?, observacao = ?" +
-						"WHERE id = ?",
-				ps -> {
+		execute.update("UPDATE produto "
+				+ "SET nome = ?, tamanho = ?, chocolate = ?, tipo = ?, preco = ?, qtde = ?, observacao = ?"
+				+ "WHERE id = ?", ps -> {
 					insert(ps, produto);
 					ps.setLong(8, produto.getId());
-				}
-		);
+				});
 		return produto;
 	}
 
 	@Override
 	public void delete(long id) {
-		execute.update(
-				"DELETE FROM produto WHERE id = ?",
-				ps -> ps.setLong(1, id));
+		execute.update("DELETE FROM produto WHERE id = ?", ps -> ps.setLong(1, id));
 	}
 
 	private static void insert(PreparedStatement ps, Produto p) throws SQLException {
