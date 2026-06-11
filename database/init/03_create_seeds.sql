@@ -1,8 +1,8 @@
 START TRANSACTION;
 
 INSERT INTO `user` (name, email, password, role) VALUES
-('Administrador', 'admin@3boys.com', 'admin123', 'ADMIN'),
-('Funcionário', 'funcionario@3boys.com', 'func123', 'FUNCIONARIO');
+('Mijaro Nakama', 'admin@3boys.com', '$2a$10$4CaB.rpXxVh4f1EUfpx4jeORvYyYCWVLcEvx638eE/zzEt07byb0W', 'ADMIN'), -- admin123
+('Takaro Nakama', 'funcionario@3boys.com', '$2a$10$uQhZ1ZYIsKVlFgQE7y792.6o1fqJHPcnY1Nil.AOjk1CcQyR2CQhC', 'FUNCIONARIO'); -- func123
 
 SET @user_admin = LAST_INSERT_ID();
 SET @user_funcionario = @user_admin + 1;

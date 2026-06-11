@@ -68,9 +68,9 @@ public class MaterialControl {
 	public void salvar() {
 		Material m = toModel();
 		valid(m);
-		if(m.getId() > 0){
+		if (m.getId() > 0) {
 			atualizar(m);
-		}else{
+		} else {
 			cadastra(m);
 		}
 		carregar();
@@ -97,11 +97,11 @@ public class MaterialControl {
 		lista.addAll(mr.findAll());
 	}
 
-	private void cadastra(Material material){
+	private void cadastra(Material material) {
 		mr.save(material);
 	}
 
-	private void atualizar(Material material){
+	private void atualizar(Material material) {
 		mr.update(material);
 	}
 

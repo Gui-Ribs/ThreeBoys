@@ -10,17 +10,16 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage stage) {
 
-
 		AppFactory factory = AppFactory.getInstance();
 		factory.validConnection();
 
 		SceneManager scenes = new SceneManager(stage, factory);
 
-		scenes.dashboard();
+		scenes.login();
 
 		stage.setTitle("3Boys");
 		stage.setMinWidth(1000);
-        stage.setMinHeight(800);
+		stage.setMinHeight(800);
 		stage.centerOnScreen();
 		stage.show();
 	}

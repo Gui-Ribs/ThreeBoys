@@ -5,11 +5,15 @@ public class Usuario {
 	private Long id;
 	private String nome;
 	private String email;
-	private String senha;
+	private String password;
 	private NivelAcesso nivelAcesso;
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -28,12 +32,12 @@ public class Usuario {
 		this.email = email;
 	}
 
-	public String getSenha() {
-		return senha;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public NivelAcesso getNivelAcesso() {

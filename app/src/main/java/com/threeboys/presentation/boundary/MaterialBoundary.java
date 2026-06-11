@@ -4,6 +4,7 @@ import com.threeboys.application.control.MaterialControl;
 import com.threeboys.domain.model.Material;
 import com.threeboys.domain.model.Produto;
 import com.threeboys.presentation.navigation.SceneManager;
+import java.util.Optional;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -16,8 +17,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.converter.NumberStringConverter;
-
-import java.util.Optional;
 
 public class MaterialBoundary {
 
@@ -35,8 +34,6 @@ public class MaterialBoundary {
 	private TextField txtDescricao = new TextField();
 
 	private TableView<Material> tabela = new TableView<>();
-
-
 
 	public MaterialBoundary(MaterialControl controle, SceneManager scenes) {
 		this.controle = controle;
@@ -85,9 +82,9 @@ public class MaterialBoundary {
 		Button btnDeletar = new Button("Deletar");
 		btnDeletar.setOnAction((e) -> {
 			Material m = controle.toModel();
-			if(m.getId() > 0) {
-				Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-						"Apagar este item", ButtonType.YES, ButtonType.NO);
+			if (m.getId() > 0) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Apagar este item", ButtonType.YES,
+						ButtonType.NO);
 				alert.setTitle("Confirma Delete");
 
 				Optional<ButtonType> resposta = alert.showAndWait();
@@ -95,21 +92,21 @@ public class MaterialBoundary {
 				if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
 					controle.deletar();
 				}
-			}else{
+			} else {
 				Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selecione um Item");
 				alert.setTitle("Aviso");
 				alert.show();
 			}
 		});
-		painelCampos.add(btnDeletar,2,3);
+		painelCampos.add(btnDeletar, 2, 3);
 
 		Button btnLimpar = new Button("Limpar Campos");
 		btnLimpar.setOnAction(e -> controle.limparCampos());
-		painelCampos.add(btnLimpar,3,3);
+		painelCampos.add(btnLimpar, 3, 3);
 
 		Button btnVoltar = new Button("‹ Painel");
 		btnVoltar.setOnAction(e -> scenes.dashboard());
-		painelCampos.add(btnVoltar,4,3);
+		painelCampos.add(btnVoltar, 4, 3);
 
 		Bindings.bindBidirectional(txtNome.textProperty(), controle.nomeProperty());
 		Bindings.bindBidirectional(txtQtde.textProperty(), controle.qtdeProperty(), new NumberStringConverter());
@@ -145,9 +142,7 @@ public class MaterialBoundary {
 
 		tabela.setItems(controle.getLista());
 
-		tabela.getSelectionModel().selectedItemProperty().addListener(
-				(obj, antigo, novo) -> controle.fromModel(novo)
-		);
+		tabela.getSelectionModel().selectedItemProperty().addListener((obj, antigo, novo) -> controle.fromModel(novo));
 
 		principal.setTop(painelCampos);
 		principal.setCenter(tabela);

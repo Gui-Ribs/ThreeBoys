@@ -28,6 +28,11 @@ public class ProdutoControl {
 
 	public Produto toModel() {
 		Produto p = new Produto();
+
+		if (id.get() > 0) {
+			p.setId(id.get());
+		}
+
 		p.setNome(nome.get());
 		p.setTamanho(tamanho.get());
 		p.setChocolate(chocolate.get());
@@ -35,10 +40,16 @@ public class ProdutoControl {
 		p.setPreco(preco.get());
 		p.setQtde(qtde.get());
 		p.setObservacao(observacao.get());
+
 		return p;
 	}
 
 	public void fromModel(Produto p) {
+		if (p == null) {
+			limparCampos();
+			return;
+		}
+
 		id.set(p.getId());
 		nome.set(p.getNome());
 		tamanho.set(p.getTamanho());
@@ -47,6 +58,48 @@ public class ProdutoControl {
 		preco.set(p.getPreco());
 		qtde.set(p.getQtde());
 		observacao.set(p.getObservacao());
+	}
+
+	public void salvar() {
+		Produto p = toModel();
+		valid(p);
+
+		if (id.get() > 0) {
+			atualizar(p);
+		} else {
+			cadastrar(p);
+		}
+
+		carregar();
+		limparCampos();
+	}
+
+	public void pesquisar() {
+		if (empty(nome.get())) {
+			carregar();
+			return;
+		}
+
+		lista.setAll(pr.findByName(nome.get()));
+	}
+
+	public void deletar() {
+		if (id.get() <= 0) {
+			throw new IllegalArgumentException("Selecione um produto");
+		}
+
+		pr.delete(id.get());
+
+		carregar();
+		limparCampos();
+	}
+
+	private void atualizar(Produto produto) {
+		pr.update(produto);
+	}
+
+	private void cadastrar(Produto produto) {
+		pr.save(produto);
 	}
 
 	public void limparCampos() {
@@ -60,40 +113,8 @@ public class ProdutoControl {
 		observacao.set("");
 	}
 
-	public void salvar() {
-		Produto p = toModel();
-		valid(p);
-		if(p.getId() > 0){
-			atualizar(p);
-		}else{
-			cadastrar(p);
-		}
-		carregar();
-		limparCampos();
-	}
-
-	public void pesquisar(){
-		lista.clear();
-		lista.addAll(pr.findByName(nome.get()));
-	}
-
-	public void deletar(){
-		Produto produto = toModel();
-		if (empty(String.valueOf(produto.getId()))) {
-			throw new IllegalArgumentException("Selecione um produto");
-		}
-		pr.delete(produto.getId());
-	}
-
-	private void atualizar(Produto produto){
-		pr.update(produto);
-	}
-
-	private void cadastrar(Produto produto){
-		pr.save(produto);
-	}
-	public void carregar(){
-		lista.addAll(pr.findAll());
+	public void carregar() {
+		lista.setAll(pr.findAll());
 	}
 
 	public ObservableList<Produto> getLista() {
@@ -103,13 +124,13 @@ public class ProdutoControl {
 	public StringProperty nomeProperty() {
 		return nome;
 	}
-	public StringProperty tamanhoProperty(){
+	public StringProperty tamanhoProperty() {
 		return tamanho;
 	}
-	public StringProperty chocolateProperty(){
+	public StringProperty chocolateProperty() {
 		return chocolate;
 	}
-	public StringProperty tipoProperty(){
+	public StringProperty tipoProperty() {
 		return tipo;
 	}
 	public DoubleProperty precoProperty() {
